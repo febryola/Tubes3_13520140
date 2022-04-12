@@ -25,6 +25,13 @@ app.use(function (req, res, next) {
 });
 
 app.post("/match", (req, res) => {
+  /**
+   * @type {{name: string,
+   *  disease: string,
+   *  dnaSequence: string,
+   *  method: string
+   * }}
+   */
   let { name, disease, dnaSequence, method } = req.body;
 
   if (!name) {
@@ -35,6 +42,7 @@ app.post("/match", (req, res) => {
         message: "No 'name' was provided!",
       })
       .end();
+    return;
   }
 
   if (!disease) {
@@ -45,6 +53,7 @@ app.post("/match", (req, res) => {
         message: "No 'disease' was provided!",
       })
       .end();
+    return;
   }
 
   if (!dnaSequence) {
@@ -55,6 +64,19 @@ app.post("/match", (req, res) => {
         message: "No 'dnaSequence' was provided!",
       })
       .end();
+    return;
+  }
+
+  let dnaMatch = dnaSequence.match(/[ACGT]+/g);
+  if (dnaMatch.length != 1 || dnaMatch[0].length != dnaSequence.length) {
+    res
+      .status(422)
+      .send({
+        code: 422,
+        message: "Invalid dna sequence!",
+      })
+      .end();
+    return;
   }
 
   method = method || "auto";
