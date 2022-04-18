@@ -79,6 +79,23 @@ app.get('/addtohasilprediksi', (req, res) => {
     });
 });
 
+//display jenis penyakit
+app.get('/jenispenyakit', (req, res) => {
+    let sql = 'SELECT * FROM jenisPenyakit';
+    db.query(sql, (err, result) => {
+        if (err) throw err;
+        console.log(result);
+    })
+});
+
+//display hasil prediksi
+app.get('/hasilprediksi', (req, res) => {
+    let sql = 'SELECT * FROM hasilPrediksi';
+    db.query(sql, (err, result) => {
+        if (err) throw err;
+        console.log(result);
+    })
+});
 
 app.listen('3000', () => {
     console.log('Server started on port 3000...')
