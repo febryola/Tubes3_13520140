@@ -1,0 +1,35 @@
+GET http://localhost:5000/hasil
+
+### GET TANGGAL
+GET http://localhost:5000/hasil/Tanggal/2022-07-10
+
+### GET NAMA PENYAKIT
+GET http://localhost:5000/hasil/Penyakit/HIV
+
+### GET STATUS
+GET http://localhost:5000/hasil/Status/True
+
+### DELETE DATA
+DELETE http://localhost:5000/hasil/1
+
+### UPDATE DATA
+PATCH  http://localhost:5000/hasil/1
+Content-Type: application/json
+
+{
+    "tanggalPrediksi": "2022-07-09",
+    "namaPasien": "YOYO",
+    "penyakitPrediksi": "Kanker",
+    "statusPrediksi": "True"
+}
+
+### POST
+POST  http://localhost:5000/hasil
+Content-Type: application/json
+
+{
+    "tanggalPrediksi": "2022-07-09",
+    "namaPasien": "Budi",
+    "penyakitPrediksi": "Kanker",
+    "statusPrediksi": "True"
+}
