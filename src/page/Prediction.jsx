@@ -64,7 +64,8 @@ const Prediksi = () => {
       xhr.responseType = 'json';
       xhr.onload = () => {
         setResult(xhr.response.result.toString().toUpperCase());
-        setSimilarity(xhr.response.similarity.toString());
+        const _similarity = (xhr.response.similarity * 100).toString() + " %";
+        setSimilarity(_similarity);
         console.log(xhr.response.result);
       }
       var _method = "auto";
