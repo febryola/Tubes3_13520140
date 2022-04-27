@@ -5,7 +5,7 @@ const Penyakit = () => {
   const penyakit = ["Autisme", "Cancer", "Diabetes", "Hipertensi"];
 
   const [name, setName] = useState("No Name");
-  const [filename, setFilename] = useState("No file selected");
+  const [filename, setFilename] = useState("No File Selected");
   const fileInputRef = useRef(null);
   const [isFileValid, setIsFileValid] = useState(false);
   const [isAllFilled, setIsAllFilled] = useState(true);
@@ -75,7 +75,7 @@ const Penyakit = () => {
             <div
               className={
                 `mb-[0.75rem] text-[0.668rem] font-medium lg:mb-[1.125rem] lg:text-[1rem] ` +
-                (isFileValid || filename === "Tidak ada berkas yang dipilih"
+                (isFileValid || filename === "No File Selected"
                   ? `text-darkgrey`
                   : `text-red`)
               }

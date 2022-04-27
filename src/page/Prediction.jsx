@@ -6,7 +6,8 @@ const Prediksi = () => {
   const listPenyakit = ["Select Disease","Autisme","Cancer","Diabetes","Hipertensi",];
   const [name, setName] = useState("Empty");
   const [penyakit, setPenyakit] = useState(listPenyakit[0]);
-  const [filename, setFilename] = useState("Tidak ada berkas yang dipilih");
+  const [filename, setFilename] = useState("No File Selected");
+  const [file, setFile] = useState(null);
   const fileInputRef = useRef(null);
   const [isFileValid, setIsFileValid] = useState(false);
   const [isAllFilled, setIsAllFilled] = useState(true);
@@ -27,33 +28,38 @@ const Prediksi = () => {
   };
 
   const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    setFilename(file.name);
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      DNA = e.target.result;
-      fileValidation();
-    };
-    reader.readAsText(file);
+    const _file = e.target.files[0];
+    setFilename(_file.name);
+    setFile(_file);
+    fileValidation(_file.name);
   };
 
-  const fileValidation = () => {
-    const regex = /^[AGCT]*$/;
-    if (regex.test(DNA)) {
-      setIsFileValid(true);
-    } else {
-      setIsFileValid(false);
-    }
+  const fileValidation = (_filename) => {
+    setIsFileValid(_filename.endsWith(".txt"));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    {
-      name === "Empty" || penyakit === listPenyakit[0] || !isFileValid
-        ? setIsAllFilled(false)
-        : setIsAllFilled(true);
+    name === "Empty" || penyakit === listPenyakit[0] || !isFileValid
+      ? setIsAllFilled(false)
+      : setIsAllFilled(true);
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', 'http://localhost:8080/match');
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.onload = () => {
+        console.log(xhr.response);
+      }
+      xhr.send(JSON.stringify({
+          name,
+          disease: penyakit,
+          dnaSequence: reader.result,
+          method: "auto"
+      }));
     }
+    reader.readAsText(file);
   };
 
   return (
@@ -86,7 +92,7 @@ const Prediksi = () => {
             <div
               className={
                 `mb-[0.75rem] text-[0.668rem] font-medium text-darkgrey lg:mb-[1.125rem] lg:text-[1rem] ` +
-                (isFileValid || filename === "Tidak ada berkas yang dipilih"
+                (isFileValid || filename === "No File Selected"
                   ? `text-darkgrey`
                   : `text-red`)
               }
@@ -141,7 +147,7 @@ const Prediksi = () => {
               `text-[0.667rem] font-medium text-red lg:text-[1rem] ` +
               (isAllFilled ? `hidden` : `block`)
             }
-          >*Input Can't be empty
+          >*Input Can't be Empty
           </p>
         </form>
       </div>

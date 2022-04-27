@@ -1,7 +1,9 @@
 const { match, kmpMatch, bmMatch, levenshteinDistance } = require("./matcher");
 const express = require("express");
 const bp = require("body-parser");
+// const route = require("./routes/index");
 const app = express();
+// const getHasilPrediksi = require("./controller/hasilPrediksi");
 
 const origin = "http://localhost:3000";
 const port = 8080;
@@ -111,7 +113,6 @@ app.post("/match", (req, res) => {
 
   let distance = levenshteinDistance(dnaSequence, diseaseSequence);
   let maxLength = Math.max(dnaSequence.length, diseaseSequence.length);
-  // TODO: Cap maxLength so that 100% match should get at least 80% similarity
   let similarity = (maxLength - distance) / maxLength;
   let result = similarity >= 0.8;
 
@@ -130,7 +131,12 @@ app.post("/match", (req, res) => {
     .end();
 });
 
+// app.use("/", route);
 app.use(express.static("build"));
 
 app.listen(port);
 console.log(`listening to port ${port}`);
+
+// getHasilPrediksi().then((res) => {
+//   console.log(res);
+// });
