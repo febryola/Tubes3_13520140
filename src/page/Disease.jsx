@@ -48,18 +48,19 @@ const Penyakit = () => {
       const xhr = new XMLHttpRequest();
       xhr.open("POST", `http://${apiUrl}:8080/add`);
       xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.responseType = "json";
       xhr.onload = () => {
         if (xhr.response.code != 200) {
           alert(xhr.response.message);
           return;
         }
-        const xhr = new XMLHttpRequest();
-        xhr.open("GET", `http://${apiUrl}:8080/diseases`);
-        xhr.responseType = "json";
-        xhr.onload = () => {
-          setPenyakit(xhr.response);
+        const _xhr = new XMLHttpRequest();
+        _xhr.open("GET", `http://${apiUrl}:8080/diseases`);
+        _xhr.responseType = "json";
+        _xhr.onload = () => {
+          setPenyakit(_xhr.response);
         };
-        xhr.send();
+        _xhr.send();
       };
       xhr.send(
         JSON.stringify({
