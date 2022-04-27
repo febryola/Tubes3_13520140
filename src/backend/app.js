@@ -130,5 +130,7 @@ app.post("/match", (req, res) => {
     .end();
 });
 
+app.use(express.static("build"));
+
 app.listen(port);
 console.log(`listening to port ${port}`);
