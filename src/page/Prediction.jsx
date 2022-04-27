@@ -69,6 +69,9 @@ const Prediksi = () => {
       xhr.setRequestHeader("Content-Type", "application/json");
       xhr.responseType = "json";
       xhr.onload = () => {
+        if (xhr.response.code != 200) {
+          alert(xhr.response.message);
+        }
         setResult(xhr.response.result.toString().toUpperCase());
         const _similarity = (xhr.response.similarity * 100).toString() + " %";
         setSimilarity(_similarity);

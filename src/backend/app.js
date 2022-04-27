@@ -83,7 +83,8 @@ app.post("/match", async (req, res) => {
     return;
   }
 
-  let valid = /[ACGT]+/.test(dnaSequence);
+  let valid = /^[ACGT]+$/.test(dnaSequence);
+  console.log(valid);
   if (!valid) {
     res
       .status(422)
