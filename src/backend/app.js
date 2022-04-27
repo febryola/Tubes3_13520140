@@ -67,8 +67,8 @@ app.post("/match", (req, res) => {
     return;
   }
 
-  let dnaMatch = dnaSequence.match(/[ACGT]+/g);
-  if (dnaMatch.length != 1 || dnaMatch[0].length != dnaSequence.length) {
+  let valid = dnaSequence.match(/[ACGT]+/g);
+  if (valid) {
     res
       .status(422)
       .send({

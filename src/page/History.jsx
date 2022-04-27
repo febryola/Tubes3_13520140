@@ -39,7 +39,7 @@ const History = () => {
           />
           <Button
             className={`py-[0.45rem] px-[2rem] text-[0.85rem] lg:py-[0.75rem] lg:px-[3.75rem]`}
-            onClick={() => {
+            onClick={(e) => {
               e.preventDefault();
             }}
           >
