@@ -7,6 +7,7 @@ const Penyakit = () => {
   const [name, setName] = useState("No Name");
   const [filename, setFilename] = useState("No File Selected");
   const fileInputRef = useRef(null);
+  const [file, setFile] = useState(null);
   const [isFileValid, setIsFileValid] = useState(false);
   const [isAllFilled, setIsAllFilled] = useState(true);
 
@@ -17,33 +18,33 @@ const Penyakit = () => {
   };
 
   const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    setFilename(file.name);
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      DNA = e.target.result;
-      fileValidation();
-    };
-    reader.readAsText(file);
+    const _file = e.target.files[0];
+    setFilename(_file.name);
+    setFile(_file);
+    fileValidation(_file.name);
   };
 
-  const fileValidation = () => {
-    const regex = /^[AGCT]*$/;
-    if (regex.test(DNA)) {
-      setIsFileValid(true);
-    } else {
-      setIsFileValid(false);
-    }
+  const fileValidation = (_filename) => {
+    setIsFileValid(_filename.endsWith(".txt"));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    {
-      name === "" || !isFileValid
-        ? setIsAllFilled(false)
-        : setIsAllFilled(true);
+    name === "" || !isFileValid
+      ? setIsAllFilled(false)
+      : setIsAllFilled(true);
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', 'http://localhost:8080/add');
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.send(JSON.stringify({
+          name,
+          dnaSequence: reader.result,
+      }));
     }
+    reader.readAsText(file);
   };
 
   return (

@@ -67,11 +67,19 @@ const Prediksi = () => {
         setSimilarity(xhr.response.similarity.toString());
         console.log(xhr.response.result);
       }
+      var _method = "auto";
+      if (method == "KMP") {
+        _method = "kmp";
+      }
+      if (method == "Booyer Moore") {
+        _method = "bm";
+      }
+
       xhr.send(JSON.stringify({
           name,
           disease: penyakit,
           dnaSequence: reader.result,
-          method: "auto"
+          method: _method
       }));
     }
     reader.readAsText(file);

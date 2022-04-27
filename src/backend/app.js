@@ -9,6 +9,7 @@ const {
 const {
   getDiseaseDnaSequence,
   getAllDiseases,
+  newDisease,
 } = require("./controller/disease");
 
 const origin = "http://localhost:3000";
@@ -122,7 +123,6 @@ app.post("/match", async (req, res) => {
   let similarity = (maxLength - distance) / maxLength;
   let result = similarity >= 0.8;
 
-  // TODO: Add result to database
   createHasilPrediksi(currentDate(), name, disease, result);
 
   res
@@ -145,6 +145,13 @@ app.get("/diseases", async (_, res) => {
     diseases.push(disease.namaPenyakit);
   }
   res.status(200).send(diseases).end();
+});
+
+app.post("/add", async (req, res) => {
+  let { name, dnaSequence } = req.body;
+  console.log(req.body);
+  newDisease(name, dnaSequence);
+  res.status(200).end();
 });
 
 // app.use("/", route);
