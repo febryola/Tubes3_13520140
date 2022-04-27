@@ -45,7 +45,7 @@
     "test:matcher": "mocha",
     "nodemon": "nodemon src/backend/server.js",
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "vite build",
     "test:frontend": "react-scripts test",
     "eject": "react-scripts eject",
     "dev": "vite --host",

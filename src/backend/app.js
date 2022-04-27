@@ -203,7 +203,7 @@ app.post("/history", async (req, res) => {
 });
 
 // app.use("/", route);
-app.use(express.static("build"));
+app.use(express.static("dist"));
 
 function respondWithHistory(response, records) {
   const responseData = [];
