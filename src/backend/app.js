@@ -2,7 +2,7 @@ const { match, kmpMatch, bmMatch, levenshteinDistance } = require("./matcher");
 const express = require("express");
 const bp = require("body-parser");
 const app = express();
-const { getHasilPrediksi } = require("./controller/hasilPrediksi");
+// const { getHasilPrediksi } = require("./controller/hasilPrediksi");
 const {
   getDiseaseDnaSequence,
   getAllDiseases,
@@ -38,6 +38,7 @@ app.post("/match", async (req, res) => {
    * }}
    */
   let { name, disease, dnaSequence, method } = req.body;
+  console.log(req.body);
 
   if (!name) {
     res
@@ -72,8 +73,8 @@ app.post("/match", async (req, res) => {
     return;
   }
 
-  let valid = dnaSequence.match(/[ACGT]+/g);
-  if (valid) {
+  let valid = /[ACGT]+/.test(dnaSequence);
+  if (!valid) {
     res
       .status(422)
       .send({

@@ -4,6 +4,8 @@ import hiasan from "../images/hiasan.png";
 
 const Prediksi = () => {
   const [listPenyakit, setListPenyakit] = useState(["Select Disease"]);
+  const [similarity, setSimilarity] = useState("Empty");
+  const [result, setResult] = useState("");
   const listMethod = ["Select Method","KMP","Booyer Moore"];
   const [method, setMethod] = useState(listMethod[0]);
   const [name, setName] = useState("Empty");
@@ -23,7 +25,7 @@ const Prediksi = () => {
         console.log(listPenyakit);
     }
       xhr.send();
-  }, [])
+  }, []);
 
   const today = new Date();
 
@@ -51,13 +53,19 @@ const Prediksi = () => {
       ? setIsAllFilled(false)
       : setIsAllFilled(true);
 
+    setResult("Waiting...");
+    setSimilarity("Waiting...");
+
     const reader = new FileReader();
     reader.onload = () => {
       const xhr = new XMLHttpRequest();
       xhr.open('POST', 'http://localhost:8080/match');
       xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.responseType = 'json';
       xhr.onload = () => {
-        console.log(xhr.response);
+        setResult(xhr.response.result.toString().toUpperCase());
+        setSimilarity(xhr.response.similarity.toString());
+        console.log(xhr.response.result);
       }
       xhr.send(JSON.stringify({
           name,
@@ -222,7 +230,17 @@ const Prediksi = () => {
               <i>
                 {name === "" || name === "Empty"
                   ? "Empty"
-                  : "Click Result to see the result"}
+                  : result}
+              </i>
+            </p>
+          </div>
+          <div className="flex flex-1 flex-row">
+            <p className="basis-1/2 text-[1rem] font-semibold lg:text-[1.5rem]">
+              Similarity
+            </p>
+            <p className="basis-1/2 text-[1rem] text-darkgrey lg:text-[1.5rem]">
+              <i>
+                {similarity}
               </i>
             </p>
           </div>
