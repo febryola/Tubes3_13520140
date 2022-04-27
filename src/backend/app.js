@@ -2,7 +2,10 @@ const { match, kmpMatch, bmMatch, levenshteinDistance } = require("./matcher");
 const express = require("express");
 const bp = require("body-parser");
 const app = express();
-// const { getHasilPrediksi } = require("./controller/hasilPrediksi");
+const {
+  createHasilPrediksi,
+  currentDate,
+} = require("./controller/hasilPrediksi");
 const {
   getDiseaseDnaSequence,
   getAllDiseases,
@@ -87,7 +90,6 @@ app.post("/match", async (req, res) => {
 
   method = method || "auto";
 
-  // TODO: Retrieve disease DNA sequence from database
   /**
    * @type {string}
    */
@@ -121,6 +123,7 @@ app.post("/match", async (req, res) => {
   let result = similarity >= 0.8;
 
   // TODO: Add result to database
+  createHasilPrediksi(currentDate(), name, disease, result);
 
   res
     .status(200)
