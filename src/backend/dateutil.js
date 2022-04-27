@@ -29,6 +29,37 @@ function monthIndex(month) {
   }
 }
 
+function monthToString(monthIndex) {
+  switch (monthIndex) {
+    case 0:
+      return "Januari";
+    case 1:
+      return "Februari";
+    case 2:
+      return "Maret";
+    case 3:
+      return "April";
+    case 4:
+      return "Mei";
+    case 5:
+      return "Juni";
+    case 6:
+      return "Juli";
+    case 7:
+      return "Agustus";
+    case 8:
+      return "September";
+    case 9:
+      return "Oktober";
+    case 10:
+      return "November";
+    case 11:
+      return "Desember";
+    default:
+      return "Januari";
+  }
+}
+
 function stringToDate(dateString) {
   const dateRegex1 = /([A-Za-z]+)\s+(\d{1,2})\s+(\d{4})/;
   const dateRegex2 = /(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/;
@@ -64,4 +95,10 @@ function stringToDate(dateString) {
   }
 }
 
-module.exports = { monthIndex, stringToDate };
+function dateToString(date) {
+  return `${date.getDate()} ${monthToString(
+    date.getMonth()
+  )} ${date.getFullYear()}`;
+}
+
+module.exports = { monthIndex, stringToDate, dateToString };

@@ -16,7 +16,7 @@ const {
   newDisease,
 } = require("./controller/disease");
 
-const { stringToDate } = require("./dateutil");
+const { stringToDate, dateToString } = require("./dateutil");
 
 const origin = "http://localhost:3000";
 const port = 8080;
@@ -174,7 +174,7 @@ app.post("/history", async (req, res) => {
     return;
   }
 
-  const diseaseRegex = /([A-Za-z\s]+)/;
+  const diseaseRegex = /^([A-Za-z\s]+)$/;
   const fullRegex = /^(.*)(?<=\d)\s([A-Za-z\s]+)$/;
   const date = stringToDate(query);
 
@@ -209,9 +209,10 @@ app.use(express.static("dist"));
 function respondWithHistory(response, records) {
   const responseData = [];
   for (const record of records) {
+    const date = new Date(Date.parse(record.tanggalPrediksi));
     responseData.push({
       name: record.namaPasien,
-      Date: record.tanggalPrediksi,
+      Date: dateToString(date),
       Disease: record.penyakitPrediksi,
       result: record.statusPrediksi,
     });
