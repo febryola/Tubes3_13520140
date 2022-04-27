@@ -1,8 +1,8 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "../Utilities";
 
 const Penyakit = () => {
-  const penyakit = ["Autisme", "Cancer", "Diabetes", "Hipertensi"];
+  const [penyakit, setPenyakit] = useState([]);
 
   const [name, setName] = useState("No Name");
   const [filename, setFilename] = useState("No File Selected");
@@ -10,6 +10,16 @@ const Penyakit = () => {
   const [file, setFile] = useState(null);
   const [isFileValid, setIsFileValid] = useState(false);
   const [isAllFilled, setIsAllFilled] = useState(true);
+
+  useEffect(() => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "http://localhost:8080/diseases");
+    xhr.responseType = "json";
+    xhr.onload = () => {
+      setPenyakit(xhr.response);
+    };
+    xhr.send();
+  }, []);
 
   var DNA = "";
   const handleUploadFileButton = (e) => {
@@ -30,20 +40,29 @@ const Penyakit = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    name === "" || !isFileValid
-      ? setIsAllFilled(false)
-      : setIsAllFilled(true);
+    name === "" || !isFileValid ? setIsAllFilled(false) : setIsAllFilled(true);
 
     const reader = new FileReader();
     reader.onload = () => {
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', 'http://localhost:8080/add');
+      xhr.open("POST", "http://localhost:8080/add");
       xhr.setRequestHeader("Content-Type", "application/json");
-      xhr.send(JSON.stringify({
+      xhr.onload = () => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://localhost:8080/diseases");
+        xhr.responseType = "json";
+        xhr.onload = () => {
+          setPenyakit(xhr.response);
+        };
+        xhr.send();
+      };
+      xhr.send(
+        JSON.stringify({
           name,
           dnaSequence: reader.result,
-      }));
-    }
+        })
+      );
+    };
     reader.readAsText(file);
   };
 
@@ -52,12 +71,12 @@ const Penyakit = () => {
       <h1 className="mb-[1.5rem] text-[1.5rem] font-extrabold lg:mb-[3rem] lg:text-[2.25rem]">
         Add Disease
       </h1>
-      <form className="lg:mb-[4.5rem] mb-[3rem]">
+      <form className="mb-[3rem] lg:mb-[4.5rem]">
         <div className="flex flex-col lg:flex-row lg:gap-[7.5rem]">
           {/* NAMA PENYAKIT */}
           <div className="mb-[1.5rem] basis-5/12 lg:mb-[3rem]">
-            <p className="mb-[1rem] font-bold text-[1rem]  lg:mb-[1.5rem] lg:text-[1.5rem]">
-              Input Name 
+            <p className="mb-[1rem] text-[1rem] font-bold  lg:mb-[1.5rem] lg:text-[1.5rem]">
+              Input Name
             </p>
             <input
               type="text"
@@ -80,7 +99,10 @@ const Penyakit = () => {
               }
             >
               <p>*Format File .txt</p>
-              <p>*File hanya berisi huruf A, C, G, dan/atau T tanpa enter,spasi, dan harus huruf besar</p>
+              <p>
+                *File hanya berisi huruf A, C, G, dan/atau T tanpa enter,spasi,
+                dan harus huruf besar
+              </p>
             </div>
             <p className="text-[0.667rem] font-medium lg:text-[1rem]">
               <Button
@@ -102,7 +124,10 @@ const Penyakit = () => {
           </div>
         </div>
 
-        <Button className={`mb-[1rem] px-[2.25rem] lg:px-[3.625rem]`} onClick={handleSubmit}>
+        <Button
+          className={`mb-[1rem] px-[2.25rem] lg:px-[3.625rem]`}
+          onClick={handleSubmit}
+        >
           Add
         </Button>
         <p
@@ -137,10 +162,8 @@ const Penyakit = () => {
                 key={index}
                 className="flex flex-row justify-between px-[0.667rem] py-[0.25rem] lg:px-[2.25rem] lg:py-[1.25rem]"
               >
-                <p className="text-[0.667rem] lg:text-[1.25rem]">
-                  {item}
-                </p>
-                <p className="underline hover:cursor-pointer text-[0.667rem] lg:text-[1.25rem]  ">
+                <p className="text-[0.667rem] lg:text-[1.25rem]">{item}</p>
+                <p className="text-[0.667rem] underline hover:cursor-pointer lg:text-[1.25rem]  ">
                   Delete
                 </p>
               </div>
