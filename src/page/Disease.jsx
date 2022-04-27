@@ -66,8 +66,6 @@ const Penyakit = () => {
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-
-          {/* FILE DNA */}
           <div className="mb-[1.5rem] basis-5/12 lg:mb-[3rem]">
             <p className="mb-[1rem] text-[1rem] font-bold font-medium lg:mb-[1.5rem] lg:text-[1.5rem]">
               File DNA

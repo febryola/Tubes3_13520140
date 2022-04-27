@@ -20,7 +20,7 @@ const About = () => {
             memprediksi berbagai macam penyakit yang tersimpan pada basis data berdasarkan urutan sekuens DNA-nya. 
             Sebuah sekuens DNA adalah proses atau teknik penentuan urutan basa nukleotida pada suatu molekul DNA
             serta merupakan suatu representasi <i>string of nucleotides</i> yang disimpan pada
-            suatu rantai DNA, sebagai contoh: ATTCGTAACTAGTAAGTTA.
+            suatu rantai DNA, sebagai contoh: ACGTAGTTCGTAACTAGTAAGTTA.
             <img
             src={FRSSERVICE}
             alt="DNA"
@@ -54,8 +54,6 @@ const About = () => {
         <div className="order-1 mb-[2.25rem] flex justify-center lg:order-2 lg:mb-0 lg:basis-5/12">
         </div>
       </div>
-
-      {/* Tim Kami */}
       <h1 className="mb-[1.5rem] text-center text-[1.5rem] font-extrabold lg:mb-[3rem] lg:text-[2.25rem]">
         Our Team
       </h1>

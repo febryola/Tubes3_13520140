@@ -1,9 +1,12 @@
 const { match, kmpMatch, bmMatch, levenshteinDistance } = require("./matcher");
 const express = require("express");
 const bp = require("body-parser");
-// const route = require("./routes/index");
 const app = express();
-// const getHasilPrediksi = require("./controller/hasilPrediksi");
+const { getHasilPrediksi } = require("./controller/hasilPrediksi");
+const {
+  getDiseaseDnaSequence,
+  getAllDiseases,
+} = require("./controller/disease");
 
 const origin = "http://localhost:3000";
 const port = 8080;
@@ -26,7 +29,7 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.post("/match", (req, res) => {
+app.post("/match", async (req, res) => {
   /**
    * @type {{name: string,
    *  disease: string,
@@ -87,7 +90,7 @@ app.post("/match", (req, res) => {
   /**
    * @type {string}
    */
-  let diseaseSequence;
+  const diseaseSequence = (await getDiseaseDnaSequence(disease))[0].rantaiDna;
 
   let foundAt = -1;
   switch (method) {
@@ -131,12 +134,17 @@ app.post("/match", (req, res) => {
     .end();
 });
 
+app.get("/diseases", async (_, res) => {
+  const diseasesRaw = await getAllDiseases();
+  const diseases = [];
+  for (const disease of diseasesRaw) {
+    diseases.push(disease.namaPenyakit);
+  }
+  res.status(200).send(diseases).end();
+});
+
 // app.use("/", route);
 app.use(express.static("build"));
 
 app.listen(port);
 console.log(`listening to port ${port}`);
-
-// getHasilPrediksi().then((res) => {
-//   console.log(res);
-// });

@@ -1,9 +1,11 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Button } from "../Utilities";
 import hiasan from "../images/hiasan.png";
 
 const Prediksi = () => {
-  const listPenyakit = ["Select Disease","Autisme","Cancer","Diabetes","Hipertensi",];
+  const [listPenyakit, setListPenyakit] = useState(["Select Disease"]);
+  const listMethod = ["Select Method","KMP","Booyer Moore"];
+  const [method, setMethod] = useState(listMethod[0]);
   const [name, setName] = useState("Empty");
   const [penyakit, setPenyakit] = useState(listPenyakit[0]);
   const [filename, setFilename] = useState("No File Selected");
@@ -12,15 +14,20 @@ const Prediksi = () => {
   const [isFileValid, setIsFileValid] = useState(false);
   const [isAllFilled, setIsAllFilled] = useState(true);
 
-  var DNA = "";
+  useEffect(() => {
+    const xhr = new XMLHttpRequest();
+      xhr.open("GET", "http://localhost:8080/diseases");
+      xhr.responseType = "json";
+      xhr.onload = () => {
+        setListPenyakit(listPenyakit.concat(xhr.response));
+        console.log(listPenyakit);
+    }
+      xhr.send();
+  }, [])
+
   const today = new Date();
 
-  const date =
-    String(today.getDate()).padStart(2, "0") +
-    "-" +
-    String(today.getMonth() + 1).padStart(2, "0") +
-    "-" +
-    today.getFullYear();
+  const date =String(today.getDate()).padStart(2, "0") +"-" +String(today.getMonth() + 1).padStart(2, "0") +"-" +today.getFullYear();
 
   const handleUploadFileButton = (e) => {
     e.preventDefault();
@@ -65,12 +72,10 @@ const Prediksi = () => {
   return (
     <div className="relative flex flex-col px-[1.75rem] pt-[4.5rem] pb-[3rem] lg:flex-row lg:px-[9.75rem] lg:pt-[10rem] lg:pb-[8.5rem]">
       <div className="mb-[3rem] basis-5/12 lg:mr-[7.5rem] lg:mb-[8.5rem]">
-        {/* FORM */}
         <h1 className="mb-[1.5rem] text-[1.5rem] font-extrabold lg:mb-[3rem] lg:text-[2.25rem]">
           Test DNA!
         </h1>
         <form>
-          {/* NAME */}
           <div className="mb-[1.5rem] lg:mb-[3rem]">
             <p className="mb-[1rem] text-[1rem] font-medium lg:mb-[1.5rem] lg:text-[1.5rem]">
               Name
@@ -83,8 +88,6 @@ const Prediksi = () => {
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-
-          {/* FILE DNA */}
           <div className="mb-[1.5rem] lg:mb-[3rem]">
             <p className="mb-[1rem] text-[1rem] font-medium lg:mb-[1.5rem] lg:text-[1.5rem]">
               File DNA
@@ -138,7 +141,26 @@ const Prediksi = () => {
               ))}
             </select>
           </div>
-
+          <div className="mb-[1.5rem] lg:mb-[3rem]">
+            <p className="mb-[1rem] text-[1rem] font-medium lg:mb-[1.5rem] lg:text-[1.5rem]">
+              Select Method
+            </p>
+            <select
+              name="method"
+              className="w-full rounded-[0.5rem] bg-lightgrey px-[1rem] py-[0.688rem] text-[0.688rem] text-darkgrey lg:px-[1.5rem] lg:py-[1rem] lg:text-[1rem]"
+              onChange={(e) => setMethod(e.target.value)}
+            >
+              {listMethod.map((item, index) => (
+                <option
+                  key={index}
+                  value={item}
+                  className={index === 0 ? "disabled hidden" : ""}
+                >
+                  {item}
+                </option>
+              ))}
+            </select>
+          </div>
           <Button className={`mb-[1rem]  px-[2.25rem] lg:px-[3.625rem]`} onClick={handleSubmit}>
             Result
           </Button>
@@ -182,6 +204,14 @@ const Prediksi = () => {
             </p>
             <p className="basis-1/2 text-[1rem] text-darkgrey lg:text-[1.5rem]">
               <i>{penyakit === listPenyakit[0] ? "Empty" : penyakit}</i>
+            </p>
+          </div>
+          <div className="flex flex-1 flex-row">
+            <p className="basis-1/2 text-[1rem] font-semibold lg:text-[1.5rem]">
+              Method
+            </p>
+            <p className="basis-1/2 text-[1rem] text-darkgrey lg:text-[1.5rem]">
+              <i>{method === listMethod[0] ? "Empty" : method}</i>
             </p>
           </div>
           <div className="flex flex-1 flex-row">
