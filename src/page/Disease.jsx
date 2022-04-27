@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "../Utilities";
+import { apiUrl } from "./environtment";
 
 const Penyakit = () => {
   const [penyakit, setPenyakit] = useState([]);
@@ -13,7 +14,7 @@ const Penyakit = () => {
 
   useEffect(() => {
     const xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://localhost:8080/diseases");
+    xhr.open("GET", `http://${apiUrl}:8080/diseases`);
     xhr.responseType = "json";
     xhr.onload = () => {
       setPenyakit(xhr.response);
@@ -45,11 +46,11 @@ const Penyakit = () => {
     const reader = new FileReader();
     reader.onload = () => {
       const xhr = new XMLHttpRequest();
-      xhr.open("POST", "http://localhost:8080/add");
+      xhr.open("POST", `http://${apiUrl}:8080/add`);
       xhr.setRequestHeader("Content-Type", "application/json");
       xhr.onload = () => {
         const xhr = new XMLHttpRequest();
-        xhr.open("GET", "http://localhost:8080/diseases");
+        xhr.open("GET", `http://${apiUrl}:8080/diseases`);
         xhr.responseType = "json";
         xhr.onload = () => {
           setPenyakit(xhr.response);
@@ -136,19 +137,16 @@ const Penyakit = () => {
             (isAllFilled ? `hidden` : `block`)
           }
         >
-          *Input Can't Empty
+          *Input Can't be Empty
         </p>
       </form>
 
-      {/* TABLE */}
       <div className="flex flex-col">
-        {/* TABLE HEADER */}
-        <div className="flex rounded-t-[0.5rem] bg-lightorange px-[0.667rem] py-[0.667rem] lg:py-[1.125rem] lg:px-[2.25rem]">
+        <div className="rounded-t-[0.5rem font-bold] flex bg-red px-[0.667rem] py-[0.667rem] lg:py-[1.125rem] lg:px-[2.25rem]">
           <p className="flex-1 text-[0.667rem] font-medium lg:text-[1.5rem]">
             Nama Penyakit/Kelainan yang Sudah Terdaftar
           </p>
         </div>
-        {/* TABLE DATA */}
         <div className="flex flex-col divide-y-[1px] lg:divide-y-2">
           {penyakit.length === 0 ? (
             <div className="flex justify-center py-[0.25rem] lg:py-[1.25rem]">
@@ -163,9 +161,6 @@ const Penyakit = () => {
                 className="flex flex-row justify-between px-[0.667rem] py-[0.25rem] lg:px-[2.25rem] lg:py-[1.25rem]"
               >
                 <p className="text-[0.667rem] lg:text-[1.25rem]">{item}</p>
-                <p className="text-[0.667rem] underline hover:cursor-pointer lg:text-[1.25rem]  ">
-                  Delete
-                </p>
               </div>
             ))
           )}

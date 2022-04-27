@@ -1,12 +1,13 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Button } from "../Utilities";
 import hiasan from "../images/hiasan.png";
+import { apiUrl } from "./environtment";
 
 const Prediksi = () => {
   const [listPenyakit, setListPenyakit] = useState(["Select Disease"]);
   const [similarity, setSimilarity] = useState("Empty");
   const [result, setResult] = useState("");
-  const listMethod = ["Select Method","KMP","Booyer Moore"];
+  const listMethod = ["Select Method", "KMP", "Booyer Moore"];
   const [method, setMethod] = useState(listMethod[0]);
   const [name, setName] = useState("Empty");
   const [penyakit, setPenyakit] = useState(listPenyakit[0]);
@@ -18,18 +19,23 @@ const Prediksi = () => {
 
   useEffect(() => {
     const xhr = new XMLHttpRequest();
-      xhr.open("GET", "http://localhost:8080/diseases");
-      xhr.responseType = "json";
-      xhr.onload = () => {
-        setListPenyakit(listPenyakit.concat(xhr.response));
-        console.log(listPenyakit);
-    }
-      xhr.send();
+    xhr.open("GET", `http://${apiUrl}:8080/diseases`);
+    xhr.responseType = "json";
+    xhr.onload = () => {
+      setListPenyakit(listPenyakit.concat(xhr.response));
+      console.log(listPenyakit);
+    };
+    xhr.send();
   }, []);
 
   const today = new Date();
 
-  const date =String(today.getDate()).padStart(2, "0") +"-" +String(today.getMonth() + 1).padStart(2, "0") +"-" +today.getFullYear();
+  const date =
+    String(today.getDate()).padStart(2, "0") +
+    "-" +
+    String(today.getMonth() + 1).padStart(2, "0") +
+    "-" +
+    today.getFullYear();
 
   const handleUploadFileButton = (e) => {
     e.preventDefault();
@@ -59,15 +65,15 @@ const Prediksi = () => {
     const reader = new FileReader();
     reader.onload = () => {
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', 'http://localhost:8080/match');
+      xhr.open("POST", `http://${apiUrl}:8080/match`);
       xhr.setRequestHeader("Content-Type", "application/json");
-      xhr.responseType = 'json';
+      xhr.responseType = "json";
       xhr.onload = () => {
         setResult(xhr.response.result.toString().toUpperCase());
         const _similarity = (xhr.response.similarity * 100).toString() + " %";
         setSimilarity(_similarity);
         console.log(xhr.response.result);
-      }
+      };
       var _method = "auto";
       if (method == "KMP") {
         _method = "kmp";
@@ -76,13 +82,15 @@ const Prediksi = () => {
         _method = "bm";
       }
 
-      xhr.send(JSON.stringify({
+      xhr.send(
+        JSON.stringify({
           name,
           disease: penyakit,
           dnaSequence: reader.result,
-          method: _method
-      }));
-    }
+          method: _method,
+        })
+      );
+    };
     reader.readAsText(file);
   };
 
@@ -118,7 +126,10 @@ const Prediksi = () => {
               }
             >
               <p>*Format File .txt</p>
-              <p>*File hanya berisi huruf A, C, G, dan/atau T tanpa enter,spasi, dan harus huruf besar</p>
+              <p>
+                *File hanya berisi huruf A, C, G, dan/atau T tanpa enter,spasi,
+                dan harus huruf besar
+              </p>
             </div>
             <p className="text-[0.667rem] font-medium lg:text-[1rem]">
               <Button
@@ -178,7 +189,10 @@ const Prediksi = () => {
               ))}
             </select>
           </div>
-          <Button className={`mb-[1rem]  px-[2.25rem] lg:px-[3.625rem]`} onClick={handleSubmit}>
+          <Button
+            className={`mb-[1rem]  px-[2.25rem] lg:px-[3.625rem]`}
+            onClick={handleSubmit}
+          >
             Result
           </Button>
           <p
@@ -186,7 +200,8 @@ const Prediksi = () => {
               `text-[0.667rem] font-medium text-red lg:text-[1rem] ` +
               (isAllFilled ? `hidden` : `block`)
             }
-          >*Input Can't be Empty
+          >
+            *Input Can't be Empty
           </p>
         </form>
       </div>
@@ -194,7 +209,7 @@ const Prediksi = () => {
       {/* HASIL */}
       <div className="mb-[3rem] basis-6/12">
         <h1 className="mb-[1.5rem] text-[1.5rem] font-extrabold lg:mb-[3rem] lg:text-[2.25rem]">
-         Result
+          Result
         </h1>
         <div className="flex flex-col gap-[1.5rem] lg:gap-[2.25rem]">
           <div className="flex flex-1 flex-row">
@@ -210,9 +225,7 @@ const Prediksi = () => {
               Date Test
             </p>
             <p className="basis-1/2 text-[1rem] text-darkgrey lg:text-[1.5rem]">
-              <i>
-                {name === "" || name === "Empty" ? "Empty" : date}
-              </i>
+              <i>{name === "" || name === "Empty" ? "Empty" : date}</i>
             </p>
           </div>
           <div className="flex flex-1 flex-row">
@@ -236,11 +249,7 @@ const Prediksi = () => {
               Result
             </p>
             <p className="basis-1/2 text-[1rem] text-darkgrey lg:text-[1.5rem]">
-              <i>
-                {name === "" || name === "Empty"
-                  ? "Empty"
-                  : result}
-              </i>
+              <i>{name === "" || name === "Empty" ? "Empty" : result}</i>
             </p>
           </div>
           <div className="flex flex-1 flex-row">
@@ -248,19 +257,13 @@ const Prediksi = () => {
               Similarity
             </p>
             <p className="basis-1/2 text-[1rem] text-darkgrey lg:text-[1.5rem]">
-              <i>
-                {similarity}
-              </i>
+              <i>{similarity}</i>
             </p>
           </div>
         </div>
       </div>
 
-      <img
-        src={hiasan}
-        alt=""
-        className="absolute right-0 bottom-0 -z-10"
-      />
+      <img src={hiasan} alt="" className="absolute right-0 bottom-0 -z-10" />
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "../Utilities";
+import { apiUrl } from "./environtment";
 
 const History = () => {
   const tableHeader = ["Name", "Date Test", "Disease", "Result"];
@@ -8,7 +9,7 @@ const History = () => {
 
   useEffect(() => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:8080/history");
+    xhr.open("POST", `http://${apiUrl}:8080/history`);
     xhr.responseType = "json";
     xhr.onload = () => {
       setList(xhr.response);
@@ -20,7 +21,7 @@ const History = () => {
   function onSubmit(e) {
     e.preventDefault();
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:8080/history");
+    xhr.open("POST", `http://${apiUrl}:8080/history`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.responseType = "json";
     xhr.onload = () => {
