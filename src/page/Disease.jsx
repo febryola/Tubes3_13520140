@@ -50,7 +50,8 @@ const Penyakit = () => {
       xhr.setRequestHeader("Content-Type", "application/json");
       xhr.responseType = "json";
       xhr.onload = () => {
-        if (xhr.response.code != 200) {
+        if (xhr.status != 200) {
+          //
           alert(xhr.response.message);
           return;
         }
