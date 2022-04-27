@@ -184,5 +184,5 @@ function levenshteinDistance(string1, string2) {
   return v0[string2.length];
 }
 
-// module.exports = { match, kmpMatch, bmMatch, levenshteinDistance };
-export { match, kmpMatch, bmMatch, levenshteinDistance };
+module.exports = { match, kmpMatch, bmMatch, levenshteinDistance };
+// export { match, kmpMatch, bmMatch, levenshteinDistance };

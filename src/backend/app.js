@@ -1,7 +1,6 @@
-import { match, kmpMatch, bmMatch, levenshteinDistance } from "./matcher.js";
-import express from "express";
-import bp from "body-parser";
-
+const { match, kmpMatch, bmMatch, levenshteinDistance } = require("./matcher");
+const express = require("express");
+const bp = require("body-parser");
 const app = express();
 
 const origin = "http://localhost:3000";

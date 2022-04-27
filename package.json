@@ -1,5 +1,4 @@
 {
-  "type": "module",
   "dependencies": {
     "body-parser": "^1.20.0",
     "cors": "^2.8.5",
@@ -7,7 +6,16 @@
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
     "node": "^17.7.2",
-    "sequelize": "^6.19.0"
+    "sequelize": "^6.19.0",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.1.1",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^0.26.1",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-hook-form": "^7.30.0",
+    "react-scripts": "^5.0.1",
+    "web-vitals": "^2.1.4"
   },
   "devDependencies": {
     "chai": "^4.3.6",
@@ -16,7 +24,29 @@
   },
   "scripts": {
     "serve": "node src/backend/app.js",
-    "test": "mocha",
-    "nodemon": "nodemon src/backend/server.js"
+    "test:matcher": "mocha",
+    "nodemon": "nodemon src/backend/server.js",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test:frontend": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
