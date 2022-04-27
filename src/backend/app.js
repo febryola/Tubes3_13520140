@@ -5,12 +5,18 @@ const app = express();
 const {
   createHasilPrediksi,
   currentDate,
+  getHasilPrediksiByTanggalAndPenyakit,
+  getHasilPrediksiByPenyakit,
+  getHasilPrediksiByTanggal,
+  getHasilPrediksi,
 } = require("./controller/hasilPrediksi");
 const {
   getDiseaseDnaSequence,
   getAllDiseases,
   newDisease,
 } = require("./controller/disease");
+
+const { stringToDate } = require("./dateutil");
 
 const origin = "http://localhost:3000";
 const port = 8080;
@@ -154,8 +160,63 @@ app.post("/add", async (req, res) => {
   res.status(200).end();
 });
 
+app.post("/history", async (req, res) => {
+  /**
+   * @type {{
+   *  query: string
+   * }}
+   */
+  let { query } = req.body;
+
+  if (query == undefined) {
+    getHasilPrediksi().then((result) => respondWithHistory(res, result));
+    return;
+  }
+
+  const diseaseRegex = /([A-Za-z\s]+)/;
+  const fullRegex = /^(.*)(?<=\d)\s([A-Za-z\s]+)$/;
+  const date = stringToDate(query);
+
+  if (fullRegex.test(query)) {
+    const match = query.match(fullRegex);
+    const disease = match[2];
+    const rawDate = match[1];
+    const date = stringToDate(rawDate);
+    if (date == null) {
+      res.status(400).end();
+    } else {
+      getHasilPrediksiByTanggalAndPenyakit(date, disease).then((result) => {
+        respondWithHistory(res, result);
+      });
+    }
+  } else if (diseaseRegex.test(query)) {
+    getHasilPrediksiByPenyakit(query).then((result) => {
+      respondWithHistory(res, result);
+    });
+  } else if (date != null) {
+    getHasilPrediksiByTanggal(date).then((result) => {
+      respondWithHistory(res, result);
+    });
+  } else {
+    res.status(400).end();
+  }
+});
+
 // app.use("/", route);
 app.use(express.static("build"));
+
+function respondWithHistory(response, records) {
+  const responseData = [];
+  for (const record of records) {
+    responseData.push({
+      name: record.namaPasien,
+      Date: record.tanggalPrediksi,
+      Disease: record.penyakitPrediksi,
+      result: record.statusPrediksi,
+    });
+  }
+  response.status(200).send(responseData).end();
+}
 
 app.listen(port);
 console.log(`listening to port ${port}`);
