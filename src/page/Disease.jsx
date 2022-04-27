@@ -36,7 +36,7 @@ const Penyakit = () => {
   };
 
   const fileValidation = (_filename) => {
-    setIsFileValid(_filename.endsWith(".txt"));
+    setIsFileValid(_filename != null || _filename != undefined);
   };
 
   const handleSubmit = (e) => {
