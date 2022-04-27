@@ -12,7 +12,6 @@
 * [Screenshoot](#Screenshoot)
 * [Features](#Features)
 * [Running the Program](#Running-the-Program)
-* [Automated Tests](#Automated-Tests)
 * [Project Status](#Project-Status)
 * [Authors](#Authors)
 
