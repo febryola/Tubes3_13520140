@@ -1,14 +1,26 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "../Utilities";
+import { apiUrl } from "./environtment";
 
 const Penyakit = () => {
-  const penyakit = ["Autisme", "Cancer", "Diabetes", "Hipertensi"];
+  const [penyakit, setPenyakit] = useState([]);
 
   const [name, setName] = useState("No Name");
-  const [filename, setFilename] = useState("No file selected");
+  const [filename, setFilename] = useState("No File Selected");
   const fileInputRef = useRef(null);
+  const [file, setFile] = useState(null);
   const [isFileValid, setIsFileValid] = useState(false);
   const [isAllFilled, setIsAllFilled] = useState(true);
+
+  useEffect(() => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", `http://${apiUrl}:8080/diseases`);
+    xhr.responseType = "json";
+    xhr.onload = () => {
+      setPenyakit(xhr.response);
+    };
+    xhr.send();
+  }, []);
 
   var DNA = "";
   const handleUploadFileButton = (e) => {
@@ -17,33 +29,42 @@ const Penyakit = () => {
   };
 
   const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    setFilename(file.name);
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      DNA = e.target.result;
-      fileValidation();
-    };
-    reader.readAsText(file);
+    const _file = e.target.files[0];
+    setFilename(_file.name);
+    setFile(_file);
+    fileValidation(_file.name);
   };
 
-  const fileValidation = () => {
-    const regex = /^[AGCT]*$/;
-    if (regex.test(DNA)) {
-      setIsFileValid(true);
-    } else {
-      setIsFileValid(false);
-    }
+  const fileValidation = (_filename) => {
+    setIsFileValid(_filename.endsWith(".txt"));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    {
-      name === "" || !isFileValid
-        ? setIsAllFilled(false)
-        : setIsAllFilled(true);
-    }
+    name === "" || !isFileValid ? setIsAllFilled(false) : setIsAllFilled(true);
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", `http://${apiUrl}:8080/add`);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.onload = () => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", `http://${apiUrl}:8080/diseases`);
+        xhr.responseType = "json";
+        xhr.onload = () => {
+          setPenyakit(xhr.response);
+        };
+        xhr.send();
+      };
+      xhr.send(
+        JSON.stringify({
+          name,
+          dnaSequence: reader.result,
+        })
+      );
+    };
+    reader.readAsText(file);
   };
 
   return (
@@ -51,12 +72,12 @@ const Penyakit = () => {
       <h1 className="mb-[1.5rem] text-[1.5rem] font-extrabold lg:mb-[3rem] lg:text-[2.25rem]">
         Add Disease
       </h1>
-      <form className="lg:mb-[4.5rem] mb-[3rem]">
+      <form className="mb-[3rem] lg:mb-[4.5rem]">
         <div className="flex flex-col lg:flex-row lg:gap-[7.5rem]">
           {/* NAMA PENYAKIT */}
           <div className="mb-[1.5rem] basis-5/12 lg:mb-[3rem]">
-            <p className="mb-[1rem] font-bold text-[1rem]  lg:mb-[1.5rem] lg:text-[1.5rem]">
-              Input Name 
+            <p className="mb-[1rem] text-[1rem] font-bold  lg:mb-[1.5rem] lg:text-[1.5rem]">
+              Input Name
             </p>
             <input
               type="text"
@@ -66,8 +87,6 @@ const Penyakit = () => {
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-
-          {/* FILE DNA */}
           <div className="mb-[1.5rem] basis-5/12 lg:mb-[3rem]">
             <p className="mb-[1rem] text-[1rem] font-bold font-medium lg:mb-[1.5rem] lg:text-[1.5rem]">
               File DNA
@@ -75,13 +94,16 @@ const Penyakit = () => {
             <div
               className={
                 `mb-[0.75rem] text-[0.668rem] font-medium lg:mb-[1.125rem] lg:text-[1rem] ` +
-                (isFileValid || filename === "Tidak ada berkas yang dipilih"
+                (isFileValid || filename === "No File Selected"
                   ? `text-darkgrey`
                   : `text-red`)
               }
             >
               <p>*Format File .txt</p>
-              <p>*File hanya berisi huruf A, C, G, dan/atau T tanpa enter,spasi, dan harus huruf besar</p>
+              <p>
+                *File hanya berisi huruf A, C, G, dan/atau T tanpa enter,spasi,
+                dan harus huruf besar
+              </p>
             </div>
             <p className="text-[0.667rem] font-medium lg:text-[1rem]">
               <Button
@@ -103,7 +125,10 @@ const Penyakit = () => {
           </div>
         </div>
 
-        <Button className={`mb-[1rem] px-[2.25rem] lg:px-[3.625rem]`} onClick={handleSubmit}>
+        <Button
+          className={`mb-[1rem] px-[2.25rem] lg:px-[3.625rem]`}
+          onClick={handleSubmit}
+        >
           Add
         </Button>
         <p
@@ -112,19 +137,16 @@ const Penyakit = () => {
             (isAllFilled ? `hidden` : `block`)
           }
         >
-          *Input Can't Empty
+          *Input Can't be Empty
         </p>
       </form>
 
-      {/* TABLE */}
       <div className="flex flex-col">
-        {/* TABLE HEADER */}
-        <div className="flex rounded-t-[0.5rem] bg-lightorange px-[0.667rem] py-[0.667rem] lg:py-[1.125rem] lg:px-[2.25rem]">
+        <div className="rounded-t-[0.5rem font-bold] flex bg-red px-[0.667rem] py-[0.667rem] lg:py-[1.125rem] lg:px-[2.25rem]">
           <p className="flex-1 text-[0.667rem] font-medium lg:text-[1.5rem]">
             Nama Penyakit/Kelainan yang Sudah Terdaftar
           </p>
         </div>
-        {/* TABLE DATA */}
         <div className="flex flex-col divide-y-[1px] lg:divide-y-2">
           {penyakit.length === 0 ? (
             <div className="flex justify-center py-[0.25rem] lg:py-[1.25rem]">
@@ -138,12 +160,7 @@ const Penyakit = () => {
                 key={index}
                 className="flex flex-row justify-between px-[0.667rem] py-[0.25rem] lg:px-[2.25rem] lg:py-[1.25rem]"
               >
-                <p className="text-[0.667rem] lg:text-[1.25rem]">
-                  {item}
-                </p>
-                <p className="underline hover:cursor-pointer text-[0.667rem] lg:text-[1.25rem]  ">
-                  Delete
-                </p>
+                <p className="text-[0.667rem] lg:text-[1.25rem]">{item}</p>
               </div>
             ))
           )}

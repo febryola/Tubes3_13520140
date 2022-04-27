@@ -2,6 +2,21 @@ const { match, kmpMatch, bmMatch, levenshteinDistance } = require("./matcher");
 const express = require("express");
 const bp = require("body-parser");
 const app = express();
+const {
+  createHasilPrediksi,
+  currentDate,
+  getHasilPrediksiByTanggalAndPenyakit,
+  getHasilPrediksiByPenyakit,
+  getHasilPrediksiByTanggal,
+  getHasilPrediksi,
+} = require("./controller/hasilPrediksi");
+const {
+  getDiseaseDnaSequence,
+  getAllDiseases,
+  newDisease,
+} = require("./controller/disease");
+
+const { stringToDate } = require("./dateutil");
 
 const origin = "http://localhost:3000";
 const port = 8080;
@@ -24,7 +39,7 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.post("/match", (req, res) => {
+app.post("/match", async (req, res) => {
   /**
    * @type {{name: string,
    *  disease: string,
@@ -33,6 +48,7 @@ app.post("/match", (req, res) => {
    * }}
    */
   let { name, disease, dnaSequence, method } = req.body;
+  console.log(req.body);
 
   if (!name) {
     res
@@ -67,8 +83,9 @@ app.post("/match", (req, res) => {
     return;
   }
 
-  let valid = dnaSequence.match(/[ACGT]+/g);
-  if (valid) {
+  let valid = /^[ACGT]+$/.test(dnaSequence);
+  console.log(valid);
+  if (!valid) {
     res
       .status(422)
       .send({
@@ -81,11 +98,10 @@ app.post("/match", (req, res) => {
 
   method = method || "auto";
 
-  // TODO: Retrieve disease DNA sequence from database
   /**
    * @type {string}
    */
-  let diseaseSequence;
+  const diseaseSequence = (await getDiseaseDnaSequence(disease))[0].rantaiDna;
 
   let foundAt = -1;
   switch (method) {
@@ -111,11 +127,10 @@ app.post("/match", (req, res) => {
 
   let distance = levenshteinDistance(dnaSequence, diseaseSequence);
   let maxLength = Math.max(dnaSequence.length, diseaseSequence.length);
-  // TODO: Cap maxLength so that 100% match should get at least 80% similarity
   let similarity = (maxLength - distance) / maxLength;
   let result = similarity >= 0.8;
 
-  // TODO: Add result to database
+  createHasilPrediksi(currentDate(), name, disease, result);
 
   res
     .status(200)
@@ -130,7 +145,79 @@ app.post("/match", (req, res) => {
     .end();
 });
 
-app.use(express.static("build"));
+app.get("/diseases", async (_, res) => {
+  const diseasesRaw = await getAllDiseases();
+  const diseases = [];
+  for (const disease of diseasesRaw) {
+    diseases.push(disease.namaPenyakit);
+  }
+  res.status(200).send(diseases).end();
+});
+
+app.post("/add", async (req, res) => {
+  let { name, dnaSequence } = req.body;
+  console.log(req.body);
+  newDisease(name, dnaSequence);
+  res.status(200).end();
+});
+
+app.post("/history", async (req, res) => {
+  /**
+   * @type {{
+   *  query: string
+   * }}
+   */
+  let { query } = req.body;
+
+  if (query == undefined) {
+    getHasilPrediksi().then((result) => respondWithHistory(res, result));
+    return;
+  }
+
+  const diseaseRegex = /([A-Za-z\s]+)/;
+  const fullRegex = /^(.*)(?<=\d)\s([A-Za-z\s]+)$/;
+  const date = stringToDate(query);
+
+  if (fullRegex.test(query)) {
+    const match = query.match(fullRegex);
+    const disease = match[2];
+    const rawDate = match[1];
+    const date = stringToDate(rawDate);
+    if (date == null) {
+      res.status(400).end();
+    } else {
+      getHasilPrediksiByTanggalAndPenyakit(date, disease).then((result) => {
+        respondWithHistory(res, result);
+      });
+    }
+  } else if (diseaseRegex.test(query)) {
+    getHasilPrediksiByPenyakit(query).then((result) => {
+      respondWithHistory(res, result);
+    });
+  } else if (date != null) {
+    getHasilPrediksiByTanggal(date).then((result) => {
+      respondWithHistory(res, result);
+    });
+  } else {
+    res.status(400).end();
+  }
+});
+
+// app.use("/", route);
+app.use(express.static("dist"));
+
+function respondWithHistory(response, records) {
+  const responseData = [];
+  for (const record of records) {
+    responseData.push({
+      name: record.namaPasien,
+      Date: record.tanggalPrediksi,
+      Disease: record.penyakitPrediksi,
+      result: record.statusPrediksi,
+    });
+  }
+  response.status(200).send(responseData).end();
+}
 
 app.listen(port);
 console.log(`listening to port ${port}`);

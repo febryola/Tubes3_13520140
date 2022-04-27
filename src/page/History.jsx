@@ -1,32 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../Utilities";
+import { apiUrl } from "./environtment";
 
 const History = () => {
   const tableHeader = ["Name", "Date Test", "Disease", "Result"];
-  const listRiwayat = [
-    {
-      name: "Dummy1",
-      Date: "12/12/2020",
-      Disease: "Cancer",
-      result: "POSITIF",
-    },
-    {
-      name: "Dummy2",
-      Date: "13/12/2020",
-      Disease: "Diabetes",
-      result: "Negatif",
-    },
-    {
-      name: "Dummy3",
-      Date: "14/12/2020",
-      Disease: "Autisme",
-      result: "Negatif",
-    }
-  ];
+  const [query, setQuery] = useState("");
+  const [listRiwayat, setList] = useState([]);
+
+  useEffect(() => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", `http://${apiUrl}:8080/history`);
+    xhr.responseType = "json";
+    xhr.onload = () => {
+      setList(xhr.response);
+      console.log(xhr.response);
+    };
+    xhr.send();
+  }, []);
+
+  function onSubmit(e) {
+    e.preventDefault();
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", `http://${apiUrl}:8080/history`);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.responseType = "json";
+    xhr.onload = () => {
+      setList(xhr.response);
+      console.log(xhr.response);
+    };
+    xhr.send(
+      JSON.stringify({
+        query,
+      })
+    );
+  }
 
   return (
     <div
-      className={`px-[1.75rem] pt-[4.5rem] lg:px-[9.75rem] lg:pt-[10rem] lg:pb-[8.5rem] `+(listRiwayat.length <= 2 ? `pb-[3rem]` : `pb-[1rem]`)
+      className={
+        `px-[1.75rem] pt-[4.5rem] lg:px-[9.75rem] lg:pt-[10rem] lg:pb-[8.5rem] ` +
+        (listRiwayat.length <= 2 ? `pb-[3rem]` : `pb-[1rem]`)
       }
     >
       <div className="mb-[1.5rem] flex flex-col lg:mb-[5rem] lg:flex-row lg:gap-[1.5rem]">
@@ -34,21 +47,23 @@ const History = () => {
           History
         </h1>
         <div className="flex basis-8/12 flex-nowrap justify-between gap-[0.5rem] lg:gap-[1.5rem]">
-          <input type="text" name="search" placeholder="Search History Disease"
+          <input
+            type="text"
+            name="search"
+            placeholder="Search History Disease"
             className="w-full rounded-[0.5rem] bg-lightgrey px-[1rem] py-[0.75rem] text-[0.667rem] text-darkgrey lg:px-[1.75rem] lg:py-[1rem] lg:text-[1rem]"
+            onChange={(e) => setQuery(e.target.value)}
           />
           <Button
             className={`py-[0.45rem] px-[2rem] text-[0.85rem] lg:py-[0.75rem] lg:px-[3.75rem]`}
-            onClick={(e) => {
-              e.preventDefault();
-            }}
+            onClick={onSubmit}
           >
             Search
           </Button>
         </div>
       </div>
       <div className="flex flex-col">
-        <div className="flex flex-row rounded-t-[0.5rem] gap-[1rem]  bg-red px-[0.667rem] py-[0.667rem] lg:py-[1.125rem] lg:px-[2.25rem]">
+        <div className="flex flex-row gap-[1rem] rounded-t-[0.5rem]  bg-red px-[0.667rem] py-[0.667rem] lg:py-[1.125rem] lg:px-[2.25rem]">
           {tableHeader.map((item, index) => (
             <p
               key={index}
@@ -60,10 +75,8 @@ const History = () => {
         </div>
         <div className="flex flex-col divide-y-[1px] lg:divide-y-2">
           {listRiwayat.length === 0 ? (
-            <div className="flex justify-center  lg:py-[1.25rem] py-[3rem]">
-              <p className="text-[0.667rem] lg:text-[1.25rem]">
-                Not Found!
-              </p>
+            <div className="flex justify-center  py-[3rem] lg:py-[1.25rem]">
+              <p className="text-[0.667rem] lg:text-[1.25rem]">Not Found!</p>
             </div>
           ) : (
             listRiwayat.map((item, index) => (
