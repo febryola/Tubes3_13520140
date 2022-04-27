@@ -17,6 +17,10 @@ const Penyakit = () => {
     xhr.open("GET", `http://${apiUrl}:8080/diseases`);
     xhr.responseType = "json";
     xhr.onload = () => {
+      if (xhr.response.code != 200) {
+        alert(xhr.response.message);
+        return;
+      }
       setPenyakit(xhr.response);
     };
     xhr.send();

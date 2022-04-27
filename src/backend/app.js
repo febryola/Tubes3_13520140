@@ -156,6 +156,17 @@ app.get("/diseases", async (_, res) => {
 
 app.post("/add", async (req, res) => {
   let { name, dnaSequence } = req.body;
+  let valid = /^[ACGT]+$/.test(dnaSequence);
+  if (!valid) {
+    res
+      .status(422)
+      .send({
+        code: 422,
+        message: "Invalid dna sequence!",
+      })
+      .end();
+    return;
+  }
   console.log(req.body);
   newDisease(name, dnaSequence);
   res.status(200).end();
