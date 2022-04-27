@@ -71,6 +71,9 @@ const Prediksi = () => {
       xhr.onload = () => {
         if (xhr.response.code != 200) {
           alert(xhr.response.message);
+          setSimilarity("ERROR");
+          setResult("ERROR");
+          return;
         }
         setResult(xhr.response.result.toString().toUpperCase());
         const _similarity = (xhr.response.similarity * 100).toString() + " %";
