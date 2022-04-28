@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "../Utilities";
 import { apiUrl } from "./environtment";
-
-const Penyakit = () => {
+const Disease = () => {
   const [penyakit, setPenyakit] = useState([]);
 
   const [name, setName] = useState("No Name");
@@ -74,13 +73,14 @@ const Penyakit = () => {
   };
 
   return (
-    <div className="px-[1.75rem] pt-[4.5rem] pb-[3rem] lg:px-[9.75rem] lg:pt-[10rem] lg:pb-[8.5rem]">
-      <h1 className="mb-[1.5rem] text-[1.5rem] font-extrabold lg:mb-[3rem] lg:text-[2.25rem]">
+    
+    
+    <div className="relative flex flex-col px-[1.75rem] pt-[4.5rem] pb-[3rem] lg:flex-row lg:px-[9.75rem] lg:pt-[10rem] lg:pb-[8.5rem]">
+      <div className="mb-[3rem] basis-5/12 lg:mr-[7.5rem] lg:mb-[8.5rem]">
+      <h1 className="mb-[3rem] text-[1.5rem] font-extrabold lg:mb-[3rem] lg:text-[2.25rem]">
         Add Disease
       </h1>
-      <form className="mb-[3rem] lg:mb-[4.5rem]">
-        <div className="flex flex-col lg:flex-row lg:gap-[7.5rem]">
-          {/* NAMA PENYAKIT */}
+      <form className="mb-[1.5rem] lg:mb-[3rem]">
           <div className="mb-[1.5rem] basis-5/12 lg:mb-[3rem]">
             <p className="mb-[1rem] text-[1rem] font-bold  lg:mb-[1.5rem] lg:text-[1.5rem]">
               Input Name
@@ -93,13 +93,13 @@ const Penyakit = () => {
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-          <div className="mb-[1.5rem] basis-5/12 lg:mb-[3rem]">
-            <p className="mb-[1rem] text-[1rem] font-bold font-medium lg:mb-[1.5rem] lg:text-[1.5rem]">
+          <div className="mb-[1.5rem] lg:mb-[3rem]">
+            <p className="mb-[1rem] text-[1rem] font-medium lg:mb-[1.5rem] lg:text-[1.5rem]">
               File DNA
             </p>
             <div
               className={
-                `mb-[0.75rem] text-[0.668rem] font-medium lg:mb-[1.125rem] lg:text-[1rem] ` +
+                `mb-[0.75rem] text-[0.668rem] font-medium text-darkgrey lg:mb-[1.125rem] lg:text-[1rem] ` +
                 (isFileValid || filename === "No File Selected"
                   ? `text-darkgrey`
                   : `text-red`)
@@ -113,7 +113,7 @@ const Penyakit = () => {
             </div>
             <p className="text-[0.667rem] font-medium lg:text-[1rem]">
               <Button
-                className={`!mr-[1rem] !bg-red !py-[0.6rem] !px-[0.8rem] !text-[0.667rem] !font-medium hover:!bg-orange lg:!mr-[1.5rem] lg:!p-[1rem] lg:!text-[1rem]`}
+                className={`!mr-[1rem] !bg-red !p-[0.6rem] !text-[0.667rem] !font-medium hover:!bg-orange lg:!mr-[1.5rem] lg:!p-[1rem] lg:!text-[1rem]`}
                 onClick={handleUploadFileButton}
               >
                 Browse File
@@ -124,12 +124,11 @@ const Penyakit = () => {
               type="file"
               className="hidden"
               multiple={false}
-              accept=".txt,.text,text/plain"
+              accept=".txt"
               onChange={handleFileUpload}
               ref={fileInputRef}
             />
           </div>
-        </div>
 
         <Button
           className={`mb-[1rem] px-[2.25rem] lg:px-[3.625rem]`}
@@ -146,11 +145,11 @@ const Penyakit = () => {
           *Input Can't be Empty
         </p>
       </form>
-
-      <div className="flex flex-col">
+      </div>
+      <div className="relative-flex">
         <div className="rounded-t-[0.5rem font-bold] flex bg-red px-[0.667rem] py-[0.667rem] lg:py-[1.125rem] lg:px-[2.25rem]">
           <p className="flex-1 text-[0.667rem] font-medium lg:text-[1.5rem]">
-            Nama Penyakit/Kelainan yang Sudah Terdaftar
+            Penyakit/Kelainan yang Sudah Terdaftar
           </p>
         </div>
         <div className="flex flex-col divide-y-[1px] lg:divide-y-2">
@@ -170,11 +169,10 @@ const Penyakit = () => {
               </div>
             ))
           )}
-          <div></div>
         </div>
       </div>
     </div>
   );
 };
 
-export default Penyakit;
+export default Disease;
