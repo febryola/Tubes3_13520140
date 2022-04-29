@@ -9,7 +9,7 @@ const History = () => {
 
   useEffect(() => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", `http://${apiUrl}:8080/history`);
+    xhr.open("POST", `${apiUrl}/history`);
     xhr.responseType = "json";
     xhr.onload = () => {
       setList(xhr.response);
@@ -21,7 +21,7 @@ const History = () => {
   function onSubmit(e) {
     e.preventDefault();
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", `http://${apiUrl}:8080/history`);
+    xhr.open("POST", `${apiUrl}/history`);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.responseType = "json";
     xhr.onload = () => {

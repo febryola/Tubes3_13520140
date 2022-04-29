@@ -13,7 +13,7 @@ const Disease = () => {
 
   useEffect(() => {
     const xhr = new XMLHttpRequest();
-    xhr.open("GET", `http://${apiUrl}:8080/diseases`);
+    xhr.open("GET", `${apiUrl}/diseases`);
     xhr.responseType = "json";
     xhr.onload = () => {
       setPenyakit(xhr.response);
@@ -45,7 +45,7 @@ const Disease = () => {
     const reader = new FileReader();
     reader.onload = () => {
       const xhr = new XMLHttpRequest();
-      xhr.open("POST", `http://${apiUrl}:8080/add`);
+      xhr.open("POST", `${apiUrl}/add`);
       xhr.setRequestHeader("Content-Type", "application/json");
       xhr.responseType = "json";
       xhr.onload = () => {
@@ -55,7 +55,7 @@ const Disease = () => {
           return;
         }
         const _xhr = new XMLHttpRequest();
-        _xhr.open("GET", `http://${apiUrl}:8080/diseases`);
+        _xhr.open("GET", `${apiUrl}/diseases`);
         _xhr.responseType = "json";
         _xhr.onload = () => {
           setPenyakit(_xhr.response);
@@ -73,14 +73,12 @@ const Disease = () => {
   };
 
   return (
-    
-    
     <div className="relative flex flex-col px-[1.75rem] pt-[4.5rem] pb-[3rem] lg:flex-row lg:px-[9.75rem] lg:pt-[10rem] lg:pb-[8.5rem]">
       <div className="mb-[3rem] basis-5/12 lg:mr-[7.5rem] lg:mb-[8.5rem]">
-      <h1 className="mb-[3rem] text-[1.5rem] font-extrabold lg:mb-[3rem] lg:text-[2.25rem]">
-        Add Disease
-      </h1>
-      <form className="mb-[1.5rem] lg:mb-[3rem]">
+        <h1 className="mb-[3rem] text-[1.5rem] font-extrabold lg:mb-[3rem] lg:text-[2.25rem]">
+          Add Disease
+        </h1>
+        <form className="mb-[1.5rem] lg:mb-[3rem]">
           <div className="mb-[1.5rem] basis-5/12 lg:mb-[3rem]">
             <p className="mb-[1rem] text-[1rem] font-bold  lg:mb-[1.5rem] lg:text-[1.5rem]">
               Input Name
@@ -130,21 +128,21 @@ const Disease = () => {
             />
           </div>
 
-        <Button
-          className={`mb-[1rem] px-[2.25rem] lg:px-[3.625rem]`}
-          onClick={handleSubmit}
-        >
-          Add
-        </Button>
-        <p
-          className={
-            `text-[0.667rem] font-medium text-red lg:text-[1rem] ` +
-            (isAllFilled ? `hidden` : `block`)
-          }
-        >
-          *Input Can't be Empty
-        </p>
-      </form>
+          <Button
+            className={`mb-[1rem] px-[2.25rem] lg:px-[3.625rem]`}
+            onClick={handleSubmit}
+          >
+            Add
+          </Button>
+          <p
+            className={
+              `text-[0.667rem] font-medium text-red lg:text-[1rem] ` +
+              (isAllFilled ? `hidden` : `block`)
+            }
+          >
+            *Input Can't be Empty
+          </p>
+        </form>
       </div>
       <div className="relative-flex">
         <div className="rounded-t-[0.5rem font-bold] flex bg-red px-[0.667rem] py-[0.667rem] lg:py-[1.125rem] lg:px-[2.25rem]">

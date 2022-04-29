@@ -18,8 +18,8 @@ const {
 
 const { stringToDate, dateToString } = require("./dateutil");
 
-const origin = "http://localhost:3000";
-const port = 8080;
+const origin = "frs.lightbubble.net";
+const port = 80;
 
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: true }));
