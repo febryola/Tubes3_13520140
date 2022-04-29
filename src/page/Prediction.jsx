@@ -19,7 +19,7 @@ const Prediksi = () => {
 
   useEffect(() => {
     const xhr = new XMLHttpRequest();
-    xhr.open("GET", `http://${apiUrl}:8080/diseases`);
+    xhr.open("GET", `${apiUrl}/diseases`);
     xhr.responseType = "json";
     xhr.onload = () => {
       setListPenyakit(listPenyakit.concat(xhr.response));
@@ -65,7 +65,7 @@ const Prediksi = () => {
     const reader = new FileReader();
     reader.onload = () => {
       const xhr = new XMLHttpRequest();
-      xhr.open("POST", `http://${apiUrl}:8080/match`);
+      xhr.open("POST", `${apiUrl}/match`);
       xhr.setRequestHeader("Content-Type", "application/json");
       xhr.responseType = "json";
       xhr.onload = () => {
